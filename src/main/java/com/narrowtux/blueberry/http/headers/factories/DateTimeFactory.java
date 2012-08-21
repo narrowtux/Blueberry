@@ -15,7 +15,7 @@ public class DateTimeFactory extends HeaderObjectFactory<DateTime> {
 	}
 
 	@Override
-	public String getKey() {
+	public String getRequestHeaderKey() {
 		return key;
 	}
 }

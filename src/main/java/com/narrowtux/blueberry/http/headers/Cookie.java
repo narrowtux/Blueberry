@@ -2,6 +2,8 @@ package com.narrowtux.blueberry.http.headers;
 
 import org.joda.time.DateTime;
 
+import com.narrowtux.blueberry.util.DateUtils;
+
 
 public class Cookie implements HeaderObject {
 	private String name = null, content = null, path = null, domain = null;
@@ -19,13 +21,45 @@ public class Cookie implements HeaderObject {
 	}
 
 	public String getHeaderValue() {
-		// TODO Auto-generated method stub
-		return null;
+		StringBuilder builder = new StringBuilder();
+		builder.append(name).append('=').append(content);
+		
+		if (expires != null) {
+			builder.append("; Expires=");
+			builder.append(DateUtils.toRFC1123(expires));
+		}
+		
+		if (domain != null) {
+			builder.append("; Domain=");
+			builder.append(domain);
+		}
+		
+		if (path != null) {
+			builder.append("; Path=");
+			builder.append(path);
+		}
+		
+		if (security != null) {
+			switch (security) {
+			case Both:
+				builder.append("; ").append(Security.HttpOnly).append("; ").append(Security.Secure);
+				break;
+			default:
+				builder.append("; ").append(security);
+				break;
+			}
+		}
+		
+		return builder.toString();
 	}
 	
 	public static enum Security {
 		HttpOnly,
 		Secure,
 		Both
+	}
+
+	public String getResponseHeaderKey() {
+		return "Set-Cookie";
 	}
 }
