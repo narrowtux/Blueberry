@@ -18,5 +18,4 @@ public class DateTimeFactory extends HeaderObjectFactory<DateTime> {
 	public String getKey() {
 		return key;
 	}
-
 }
