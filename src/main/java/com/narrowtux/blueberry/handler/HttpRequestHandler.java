@@ -35,6 +35,10 @@ public abstract class HttpRequestHandler {
 		this.filter = filter;
 	}
 	
+	public String getFilter() {
+		return filter;
+	}
+	
 	public boolean doesMatch(HttpVersion version, HttpRequestMethod method, URI uri){
 		if (method == HttpRequestMethod.GET || method == HttpRequestMethod.POST) {
 			return uri.getPath().startsWith(filter);

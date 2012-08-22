@@ -54,6 +54,7 @@ public class HttpHeaders {
 	public void setHeader(String key, Object value) {
 		LinkedList<Object> list = new LinkedList<Object>();
 		list.add(value);
+		headers.remove(key);
 		headers.put(key, list);
 	}
 	

@@ -31,6 +31,7 @@ public class RequestHandlerThread extends Thread {
 			InputStream in = handle.getInputStream();
 			OutputStream out = handle.getOutputStream();
 	
+			
 			try {
 				InetAddress from = handle.getInetAddress();
 	
@@ -62,6 +63,7 @@ public class RequestHandlerThread extends Thread {
 					if (current.doesMatch(version, method, uri)) {
 						try {
 							exchange.setHandler(current);
+							exchange.readArguments();
 							current.handle(exchange);
 						} catch (Exception e) {
 							e.printStackTrace();
@@ -72,7 +74,7 @@ public class RequestHandlerThread extends Thread {
 					}
 				}
 				if (!handled) {
-					throw new IllegalStateException("Could not handle request");
+					throw new IllegalStateException("Could not handle request " + exchange.getRequestedUri());
 					// TODO send code 500 with error message
 				}
 			} catch (Exception e) {

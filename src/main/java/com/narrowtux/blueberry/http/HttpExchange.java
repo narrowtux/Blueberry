@@ -8,6 +8,8 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.InetAddress;
 import java.net.URI;
+import java.nio.CharBuffer;
+import java.util.HashMap;
 
 import com.narrowtux.blueberry.handler.HttpRequestHandler;
 import com.narrowtux.blueberry.http.headers.HttpHeaders;
@@ -21,9 +23,10 @@ public class HttpExchange {
 	private URI uri;
 	private HttpVersion version;
 	private HttpRequestMethod method;
-	BufferedWriter writer;
-	BufferedReader reader;
-	HttpRequestHandler handler = null;
+	private BufferedWriter writer;
+	private BufferedReader reader;
+	private HttpRequestHandler handler = null;
+	private HashMap<String, Object> arguments = new HashMap<String, Object>();
 	
 	public HttpExchange(InputStream in, OutputStream out, InetAddress from, URI uri, HttpVersion version, HttpRequestMethod method, BufferedReader reader2) {
 		this.in = in;
@@ -60,6 +63,34 @@ public class HttpExchange {
 		
 		writer = new BufferedWriter(new OutputStreamWriter(getOutputStream()));
 //		reader = new BufferedReader(new InputStreamReader(getInputStream()));
+	}
+	
+	public void readArguments() {
+		switch (getRequestMethod()) {
+		case POST:
+			// TODO check for the Content-Type and parse accordingly
+			try {
+				String content = "";
+				CharBuffer buffer = CharBuffer.allocate(512);
+				while(reader.read(buffer) != -1) {}
+				content = buffer.toString();
+				String args[] = content.split(";");
+				for (String arg:args) {
+					String sp[] = arg.split("=", 2);
+					if (sp.length == 2) {
+						// TODO check for argument arrays
+						arguments.put(sp[0], sp[1]);
+					}
+				}
+			} catch (IOException e) {}
+			break;
+		default:
+			break;
+		}
+	}
+	
+	public Object getArgument(String key) {
+		return arguments.get(key);
 	}
 	
 	public HttpHeaders getRequestHeaders() {
