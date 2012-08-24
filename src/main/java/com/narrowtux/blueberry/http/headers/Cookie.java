@@ -62,4 +62,32 @@ public class Cookie implements HeaderObject {
 	public String getResponseHeaderKey() {
 		return "Set-Cookie";
 	}
+
+	public String getName() {
+		return name;
+	}
+
+	public String getContent() {
+		return content;
+	}
+
+	public String getPath() {
+		return path;
+	}
+
+	public String getDomain() {
+		return domain;
+	}
+
+	public Security getSecurity() {
+		return security;
+	}
+
+	public DateTime getExpires() {
+		return expires;
+	}
+
+	public static Cookie delete(String name, String path) {
+		return new Cookie(name, "", path, null, DateTime.now().minusYears(1), null);
+	}
 }

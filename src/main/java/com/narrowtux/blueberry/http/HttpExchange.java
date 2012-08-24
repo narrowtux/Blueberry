@@ -70,11 +70,11 @@ public class HttpExchange {
 		case POST:
 			// TODO check for the Content-Type and parse accordingly
 			try {
-				String content = "";
-				CharBuffer buffer = CharBuffer.allocate(512);
-				while(reader.read(buffer) != -1) {}
-				content = buffer.toString();
-				String args[] = content.split(";");
+				int length = (int)(long)(Long) getRequestHeaders().getHeader("Content-Length").get(0);
+				char data[] = new char[length];
+				reader.read(data);
+				String content = new String(data);
+				String args[] = content.split("&");
 				for (String arg:args) {
 					String sp[] = arg.split("=", 2);
 					if (sp.length == 2) {

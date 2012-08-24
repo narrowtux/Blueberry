@@ -11,6 +11,7 @@ import com.narrowtux.blueberry.http.HttpVersion;
 import com.narrowtux.blueberry.http.headers.factories.CookieFactory;
 import com.narrowtux.blueberry.http.headers.factories.DateTimeFactory;
 import com.narrowtux.blueberry.http.headers.factories.HeaderObjectFactory;
+import com.narrowtux.blueberry.http.headers.factories.LongFactory;
 
 public abstract class HttpRequestHandler {
 	TIntObjectHashMap<HeaderObjectFactory<?>> requestHeaderFactories = new TIntObjectHashMap<HeaderObjectFactory<?>>();
@@ -21,6 +22,7 @@ public abstract class HttpRequestHandler {
 		registerRequestHeader(new DateTimeFactory("Date"));
 		registerRequestHeader(new DateTimeFactory("If-Modified-Since"));
 		registerRequestHeader(new DateTimeFactory("If-Unmodified-Since"));
+		registerRequestHeader(new LongFactory("Content-Length"));
 	}
 	
 	private String filter = "/";

@@ -34,7 +34,11 @@ public class HttpHeaders {
 			contents = new LinkedList<Object>();
 			headers.put(key, contents);
 		}
-		contents.add(value);
+		if (value instanceof List<?>) {
+			contents.addAll((List<?>) value);
+		} else {
+			contents.add(value);
+		}
 	}
 	
 	public void addHeader(HeaderObject object) {
