@@ -58,7 +58,6 @@ public class HttpHeaders {
 	public void setHeader(String key, Object value) {
 		LinkedList<Object> list = new LinkedList<Object>();
 		list.add(value);
-		headers.remove(key);
 		headers.put(key, list);
 	}
 	
@@ -106,5 +105,9 @@ public class HttpHeaders {
 		parent.getWriter().write("\n");
 		parent.getWriter().flush();
 		seal();
+	}
+
+	public boolean isSealed() {
+		return sealed;
 	}
 }

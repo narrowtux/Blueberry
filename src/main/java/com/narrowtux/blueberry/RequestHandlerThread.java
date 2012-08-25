@@ -10,10 +10,12 @@ import java.net.Socket;
 import java.net.URI;
 import java.util.LinkedList;
 
+import com.narrowtux.blueberry.handler.ErrorHandler;
 import com.narrowtux.blueberry.handler.HttpRequestHandler;
 import com.narrowtux.blueberry.http.HttpExchange;
 import com.narrowtux.blueberry.http.HttpRequestMethod;
 import com.narrowtux.blueberry.http.HttpVersion;
+import com.narrowtux.blueberry.http.headers.HttpStatusCode;
 
 public class RequestHandlerThread extends Thread {
 	Socket handle;
@@ -27,11 +29,11 @@ public class RequestHandlerThread extends Thread {
 
 	@Override
 	public void run() {
+		HttpExchange exchange = null;
 		try {
 			InputStream in = handle.getInputStream();
 			OutputStream out = handle.getOutputStream();
 	
-			
 			try {
 				InetAddress from = handle.getInetAddress();
 	
@@ -57,7 +59,7 @@ public class RequestHandlerThread extends Thread {
 	
 				LinkedList<HttpRequestHandler> handlers = server.getHandlers();
 				
-				HttpExchange exchange = new HttpExchange(in, out, from, uri, version, method, reader);
+				exchange = new HttpExchange(in, out, from, uri, version, method, reader);
 				boolean handled = false;
 				for (HttpRequestHandler current : handlers) {
 					if (current.doesMatch(version, method, uri)) {
@@ -66,20 +68,35 @@ public class RequestHandlerThread extends Thread {
 							exchange.readArguments();
 							current.handle(exchange);
 						} catch (Exception e) {
-							e.printStackTrace();
-							// TODO send code 500 with exception trace
+							if (e instanceof HttpException) {
+								HttpException he = (HttpException) e;
+								ErrorHandler.withError(he.getCode()).withException(he.getT()).handle(exchange);
+							} else {
+								ErrorHandler.withError(HttpStatusCode.HTTP_500_INTERNAL_SERVER_ERROR).withException(e).handle(exchange);
+							}
 						}
 						handled = true;
 						break;
 					}
 				}
 				if (!handled) {
-					throw new IllegalStateException("Could not handle request " + exchange.getRequestedUri());
-					// TODO send code 500 with error message
+					throw new HttpException(HttpStatusCode.HTTP_404_NOT_FOUND, "No handler found for request: "+exchange.getRequestedUri());
 				}
 			} catch (Exception e) {
-				e.printStackTrace();
-				// TODO send code 500 with error message
+				if (exchange != null) {
+					try {
+						if (e instanceof HttpException) {
+							HttpException he = (HttpException) e;
+							ErrorHandler.withError(he.getCode()).withException(he.getT()).handle(exchange);
+						} else {
+							ErrorHandler.withError(HttpStatusCode.HTTP_500_INTERNAL_SERVER_ERROR).withException(e).handle(exchange);
+						}
+					} catch (HttpException e1) {
+						e1.printStackTrace();
+					}
+				} else {
+					e.printStackTrace();
+				}
 			} finally {
 				in.close();
 				out.close();

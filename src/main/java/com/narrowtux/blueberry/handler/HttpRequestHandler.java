@@ -5,6 +5,7 @@ import java.net.URI;
 
 import gnu.trove.map.hash.TIntObjectHashMap;
 
+import com.narrowtux.blueberry.HttpException;
 import com.narrowtux.blueberry.http.HttpExchange;
 import com.narrowtux.blueberry.http.HttpRequestMethod;
 import com.narrowtux.blueberry.http.HttpVersion;
@@ -31,7 +32,7 @@ public abstract class HttpRequestHandler {
 		requestHeaderFactories.put(factory.getRequestHeaderKey().hashCode(), factory);
 	}
 	
-	public abstract void handle(HttpExchange exchange) throws IOException ;
+	public abstract void handle(HttpExchange exchange) throws IOException, HttpException ;
 	
 	public void setFilter(String filter) {
 		this.filter = filter;
