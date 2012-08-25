@@ -4,6 +4,12 @@ import gnu.trove.map.hash.TIntObjectHashMap;
 
 import com.narrowtux.blueberry.http.headers.HttpStatusCode;
 
+/**
+ * <p>The error handler will automatically handle any exception catched by the {@link com.narrowtux.blueberry.RequestHandlerThread}.</p>
+ * <p>You can register a custom handler for a code by using {@link ErrorHandler.registerErrorHandler}.</p>
+ * @author tux
+ *
+ */
 public abstract class ErrorHandler extends HttpRequestHandler {
 	HttpStatusCode currentCode;
 	static DefaultErrorHandler def = new DefaultErrorHandler();

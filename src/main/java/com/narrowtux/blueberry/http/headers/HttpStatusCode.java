@@ -4,6 +4,11 @@ import gnu.trove.map.hash.TIntObjectHashMap;
 
 import com.narrowtux.blueberry.http.HttpVersion;
 
+/**
+ * Contains all known HTTP Status codes
+ * @author tux
+ *
+ */
 public enum HttpStatusCode {
 	// 1xx Informatinonal
 	HTTP_100_CONTINUE(100, "Continue", HttpVersion.HTTP11),
@@ -100,18 +105,31 @@ public enum HttpStatusCode {
 		this.minVersion = minVersion;
 	}
 
+	/**
+	 * @return the code as integer
+	 */
 	public int getCode() {
 		return code;
 	}
 
+	/**
+	 * @return the description of the code
+	 */
 	public String getTitle() {
 		return title;
 	}
 
+	/**
+	 * @return the minimal HTTP version that understands this code
+	 */
 	public HttpVersion getMinVersion() {
 		return minVersion;
 	}
 	
+	/**
+	 * @param code to look for
+	 * @return 
+	 */
 	public HttpStatusCode byCode(int code) {
 		return byCode.get(code);
 	}

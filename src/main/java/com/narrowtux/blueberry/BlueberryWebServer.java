@@ -5,6 +5,65 @@ import java.util.LinkedList;
 
 import com.narrowtux.blueberry.handler.HttpRequestHandler;
 
+/**
+ * <p>
+ * Main class for a web server instance (you can have multiple if you want)
+ * </p>
+ * <h1>Getting started</h1>
+ * <ol>
+ * <li>First, you need to create the web server instance:
+ * 
+ * <pre>
+ * BlueberryWebServer server = new BlueberryWebServer();
+ * </pre>
+ * 
+ * </li>
+ * <li>
+ * After that, you have to bind the server to at least one
+ * {@link com.narrowtux.blueberry.Address}.
+ * 
+ * <pre>
+ * server.bind(new Address(null, 80));
+ * </pre>
+ * 
+ * In this example, we bind to port 80 on any IP address.</li>
+ * <li>
+ * Before you can start the server, you have to add at least one handler that
+ * handles HTTP Requests.<br/>
+ * Said handler must extend
+ * {@link com.narrowtux.blueberry.handler.HttpRequestHandler}.
+ * 
+ * <pre>
+ * server.getHandlers().add(myHandler);
+ * </pre>
+ * 
+ * Note that the handlers list is a {@link java.util.LinkedList}, the first
+ * handler in that list will be asked if a HTTP request matches first, then the
+ * seconod handler, etc...</li>
+ * <li>
+ * Now the instance is ready to start:
+ * 
+ * <pre>
+ * server.start();
+ * </pre>
+ * 
+ * </li>
+ * <li>
+ * When you shut down your server, you should stop it:
+ * 
+ * <pre>
+ * server.stop();
+ * </pre>
+ * 
+ * </li>
+ * </ol>
+ * 
+ * @see com.narrowtux.blueberry.handler.HttpRequestHandler
+ * @see com.narrowtux.blueberry.http.HttpExchange
+ * 
+ * @author tux
+ * 
+ */
 public class BlueberryWebServer {
 	private LinkedHashMap<Address, BlueberryServerThread> sockets = new LinkedHashMap<Address, BlueberryServerThread>();
 	private boolean running = false;
