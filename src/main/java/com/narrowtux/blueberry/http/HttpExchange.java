@@ -10,6 +10,7 @@ import java.net.InetAddress;
 import java.net.URI;
 import java.util.HashMap;
 
+import com.narrowtux.blueberry.BlueberryWebServer;
 import com.narrowtux.blueberry.handler.HttpRequestHandler;
 import com.narrowtux.blueberry.http.headers.HttpHeaders;
 import com.narrowtux.blueberry.http.headers.HttpStatusCode;
@@ -41,8 +42,9 @@ public class HttpExchange {
 	boolean caching = true;
 	HttpStatusCode status = null;
 	private HashMap<String, Object> arguments = new HashMap<String, Object>();
+	private BlueberryWebServer webServer = null;
 	
-	public HttpExchange(InputStream in, OutputStream out, InetAddress from, URI uri, HttpVersion version, HttpRequestMethod method, BufferedReader reader2) {
+	public HttpExchange(InputStream in, OutputStream out, InetAddress from, URI uri, HttpVersion version, HttpRequestMethod method, BufferedReader reader2, BlueberryWebServer server) {
 		this.in = in;
 		this.out = out;
 		this.from = from;
@@ -50,6 +52,7 @@ public class HttpExchange {
 		this.version = version;
 		this.method = method;
 		this.reader = reader2;
+		this.webServer = server;
 		init();
 	}
 	
@@ -270,5 +273,12 @@ public class HttpExchange {
 		currentOut = out;
 		writer = new BufferedWriter(new OutputStreamWriter(out));
 		cache = null;
+	}
+	
+	/**
+	 * @return the webserver instance this request was received on
+	 */
+	public BlueberryWebServer getWebServer() {
+		return webServer;
 	}
 }

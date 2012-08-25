@@ -68,12 +68,18 @@ public class BlueberryWebServer {
 	private LinkedHashMap<Address, BlueberryServerThread> sockets = new LinkedHashMap<Address, BlueberryServerThread>();
 	private boolean running = false;
 	private LinkedList<HttpRequestHandler> handlers = new LinkedList<HttpRequestHandler>();
+	private String applicationName = "Untitled application";
+	private boolean debug = false;
 	
 	/**
 	 * Constructs a new webserver
 	 */
 	public BlueberryWebServer() {
 		
+	}
+	
+	public void setApplicationName(String applicationName) {
+		this.applicationName = applicationName;
 	}
 	
 	/**
@@ -148,5 +154,21 @@ public class BlueberryWebServer {
 	 */
 	public void setHandlers(LinkedList<HttpRequestHandler> handlers) {
 		this.handlers = handlers;
+	}
+	
+	public String getServerString() {
+		return applicationName + " using Blueberry {$version} / " + System.getProperty("os.name") + " " + System.getProperty("os.version");
+	}
+	
+	public String getApplicationName() {
+		return applicationName;
+	}
+	
+	public boolean isDebug() {
+		return debug;
+	}
+	
+	public void setDebug(boolean debug) {
+		this.debug = debug;
 	}
 }

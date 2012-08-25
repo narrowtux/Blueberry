@@ -59,7 +59,7 @@ public class RequestHandlerThread extends Thread {
 	
 				LinkedList<HttpRequestHandler> handlers = server.getHandlers();
 				
-				exchange = new HttpExchange(in, out, from, uri, version, method, reader);
+				exchange = new HttpExchange(in, out, from, uri, version, method, reader, server);
 				boolean handled = false;
 				for (HttpRequestHandler current : handlers) {
 					if (current.doesMatch(version, method, uri)) {
