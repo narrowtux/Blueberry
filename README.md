@@ -1,4 +1,4 @@
-![Blueberry Banner](https://raw.github.com/narrowtux/Blueberry/master/src/main/resources/blueberry-banner.png)
+![Blueberry Banner](https://raw.github.com/narrowtux/Blueberry/master/src/main/resources/static/img/blueberry-banner.png)
 # What is Blueberry?
 Blueberry is a lightweight API for creating webclients for your java service.
 
