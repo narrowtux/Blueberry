@@ -15,6 +15,7 @@ import com.narrowtux.blueberry.handler.HttpRequestHandler;
 import com.narrowtux.blueberry.http.HttpExchange;
 import com.narrowtux.blueberry.http.HttpRequestMethod;
 import com.narrowtux.blueberry.http.HttpVersion;
+import com.narrowtux.blueberry.http.headers.HttpHeaders;
 import com.narrowtux.blueberry.http.headers.HttpStatusCode;
 
 public class RequestHandlerThread extends Thread {
@@ -56,13 +57,16 @@ public class RequestHandlerThread extends Thread {
 				version = HttpVersion.byString(sp2[1]);
 	
 				uri = new URI(sp1[1]);
+				
+				HttpHeaders requestHeaders = new HttpHeaders(server);
+				requestHeaders.read(reader);
 	
 				LinkedList<HttpRequestHandler> handlers = server.getHandlers();
 				
-				exchange = new HttpExchange(in, out, from, uri, version, method, reader, server);
+				exchange = new HttpExchange(in, out, from, uri, version, method, reader, server, requestHeaders);
 				boolean handled = false;
 				for (HttpRequestHandler current : handlers) {
-					if (current.doesMatch(version, method, uri)) {
+					if (current.doesMatch(version, method, uri, requestHeaders)) {
 						try {
 							exchange.setHandler(current);
 							exchange.readArguments();

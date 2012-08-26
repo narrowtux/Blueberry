@@ -1,5 +1,7 @@
 package com.narrowtux.blueberry.http.headers;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -7,20 +9,21 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map.Entry;
 
+import com.narrowtux.blueberry.BlueberryWebServer;
 import com.narrowtux.blueberry.http.HttpExchange;
 import com.narrowtux.blueberry.http.headers.factories.HeaderObjectFactory;
 
 public class HttpHeaders {
 	boolean sealed = false;
 	LinkedHashMap<String, LinkedList<Object>> headers = new LinkedHashMap<String, LinkedList<Object>>(10);
-	HttpExchange parent;
+	BlueberryWebServer parent;
 	static HashSet<String> multiHeaderLinesAllowed = new HashSet<String>();
 	
 	static {
 		multiHeaderLinesAllowed.add("Set-Cookie");
 	}
 	
-	public HttpHeaders(HttpExchange parent) {
+	public HttpHeaders(BlueberryWebServer parent) {
 		super();
 		this.parent = parent;
 	}
@@ -69,14 +72,14 @@ public class HttpHeaders {
 		sealed = true;
 	}
 	
-	public void read() throws IOException {
+	public void read(BufferedReader reader) throws IOException {
 		String line = null;
-		while ((line = parent.getReader().readLine()) != null && !line.isEmpty()) {
+		while ((line = reader.readLine()) != null && !line.isEmpty()) {
 			String sp[] = line.split(": ", 2);
 			String key = sp[0];
 			Object value = sp[1];
 			
-			HeaderObjectFactory<?> factory = parent.getHandler().getRequestHeaderFilter(key);
+			HeaderObjectFactory<?> factory = parent.getRequestHeaderFilter(key);
 			if (factory != null) {
 				value = factory.createObject((String) value);
 			}
@@ -84,7 +87,7 @@ public class HttpHeaders {
 		}
 	}
 	
-	public void write() throws IOException {
+	public void write(BufferedWriter writer) throws IOException {
 		for (Entry<String, LinkedList<Object>> e:headers.entrySet()) {
 			String key = e.getKey();
 			boolean multi = multiHeaderLinesAllowed.contains(key);
@@ -100,10 +103,10 @@ public class HttpHeaders {
 					values += !multi? "; " : "\n"+key+": ";
 				}
 			}
-			parent.getWriter().write(key + ": " + values + "\n");
+			writer.write(key + ": " + values + "\n");
 		}
-		parent.getWriter().write("\n");
-		parent.getWriter().flush();
+		writer.write("\n");
+		writer.flush();
 		seal();
 	}
 

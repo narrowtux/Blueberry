@@ -1,9 +1,15 @@
 package com.narrowtux.blueberry;
 
+import gnu.trove.map.hash.TIntObjectHashMap;
+
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 
 import com.narrowtux.blueberry.handler.HttpRequestHandler;
+import com.narrowtux.blueberry.http.headers.factories.CookieFactory;
+import com.narrowtux.blueberry.http.headers.factories.DateTimeFactory;
+import com.narrowtux.blueberry.http.headers.factories.HeaderObjectFactory;
+import com.narrowtux.blueberry.http.headers.factories.LongFactory;
 
 /**
  * <p>
@@ -170,5 +176,24 @@ public class BlueberryWebServer {
 	
 	public void setDebug(boolean debug) {
 		this.debug = debug;
+	}
+	
+	TIntObjectHashMap<HeaderObjectFactory<?>> requestHeaderFactories = new TIntObjectHashMap<HeaderObjectFactory<?>>();
+	
+	{
+		registerRequestHeader(new CookieFactory());
+		registerRequestHeader(new DateTimeFactory("Accept-Datetime"));
+		registerRequestHeader(new DateTimeFactory("Date"));
+		registerRequestHeader(new DateTimeFactory("If-Modified-Since"));
+		registerRequestHeader(new DateTimeFactory("If-Unmodified-Since"));
+		registerRequestHeader(new LongFactory("Content-Length"));
+	}
+	
+	public void registerRequestHeader(HeaderObjectFactory<?> factory) {
+		requestHeaderFactories.put(factory.getRequestHeaderKey().hashCode(), factory);
+	}
+	
+	public HeaderObjectFactory<?> getRequestHeaderFilter(String key) {
+		return requestHeaderFactories.get(key.hashCode());
 	}
 }

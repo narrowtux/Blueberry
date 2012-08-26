@@ -44,7 +44,7 @@ public class HttpExchange {
 	private HashMap<String, Object> arguments = new HashMap<String, Object>();
 	private BlueberryWebServer webServer = null;
 	
-	public HttpExchange(InputStream in, OutputStream out, InetAddress from, URI uri, HttpVersion version, HttpRequestMethod method, BufferedReader reader2, BlueberryWebServer server) {
+	public HttpExchange(InputStream in, OutputStream out, InetAddress from, URI uri, HttpVersion version, HttpRequestMethod method, BufferedReader reader2, BlueberryWebServer server, HttpHeaders requestHeaders) {
 		this.in = in;
 		this.out = out;
 		this.from = from;
@@ -53,6 +53,7 @@ public class HttpExchange {
 		this.method = method;
 		this.reader = reader2;
 		this.webServer = server;
+		this.requestHeaders = requestHeaders;
 		init();
 	}
 	
@@ -62,14 +63,6 @@ public class HttpExchange {
 	 */
 	public void setHandler(HttpRequestHandler handler) {
 		this.handler = handler;
-		
-		if (handler != null) {
-			try {
-				requestHeaders.read();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
 	}
 	
 	/**
@@ -81,8 +74,7 @@ public class HttpExchange {
 	
 	private void init() {
 		currentOut = cache = new BlueberryOutputStream();
-		requestHeaders = new HttpHeaders(this);
-		responseHeaders = new HttpHeaders(this);
+		responseHeaders = new HttpHeaders(getWebServer());
 		
 		responseHeaders.setHeader("Content-Type", "text/html");
 		
@@ -195,7 +187,7 @@ public class HttpExchange {
 		if (contentSize != 0) {
 			getResponseHeaders().setHeader("Content-Length", contentSize);
 		}
-		getResponseHeaders().write();
+		getResponseHeaders().write(getWriter());
 	}
 	
 	/**
