@@ -14,6 +14,7 @@ import com.narrowtux.blueberry.http.headers.factories.CookieFactory;
 import com.narrowtux.blueberry.http.headers.factories.DateTimeFactory;
 import com.narrowtux.blueberry.http.headers.factories.HeaderObjectFactory;
 import com.narrowtux.blueberry.http.headers.factories.LongFactory;
+import com.narrowtux.blueberry.util.HeaderUtils;
 
 /**
  * <p>The base class that you have to extend to handle HTTP requests</p>
@@ -70,11 +71,18 @@ public abstract class HttpRequestHandler {
 		try {
 			return doesMatch(version, method, uri);
 		} catch (UnsupportedOperationException e) {
+			if (HeaderUtils.headerContains(requestHeaders, "Upgrade")) {
+				return false; // Basic HTTP handler doesn't support connection upgrades
+			}
 			if (method == HttpRequestMethod.GET || method == HttpRequestMethod.POST) {
-				return uri.getPath().startsWith(filter);
+				return uri.getPath().startsWith(getFilter());
 			} else {
 				return false;
 			}
 		}
+	}
+	
+	public boolean shouldClose() {
+		return true;
 	}
 }

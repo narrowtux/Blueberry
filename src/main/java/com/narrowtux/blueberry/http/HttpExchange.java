@@ -183,7 +183,7 @@ public class HttpExchange {
 		if (getResponseHeaders().isSealed()) {
 			return;
 		}
-		echo("HTTP/" + getHttpVersion().getVersionString() + " " + status.getCode() + " " + status.getTitle() + "\n");
+		echo("HTTP/" + getHttpVersion().getVersionString() + " " + status.getCode() + " " + status.getTitle() + "\r\n");
 		if (contentSize != 0) {
 			getResponseHeaders().setHeader("Content-Length", contentSize);
 		}

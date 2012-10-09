@@ -10,6 +10,7 @@ import com.narrowtux.blueberry.http.headers.factories.CookieFactory;
 import com.narrowtux.blueberry.http.headers.factories.DateTimeFactory;
 import com.narrowtux.blueberry.http.headers.factories.HeaderObjectFactory;
 import com.narrowtux.blueberry.http.headers.factories.LongFactory;
+import com.narrowtux.blueberry.http.headers.factories.StringListFactory;
 
 /**
  * <p>
@@ -187,6 +188,7 @@ public class BlueberryWebServer {
 		registerRequestHeader(new DateTimeFactory("If-Modified-Since"));
 		registerRequestHeader(new DateTimeFactory("If-Unmodified-Since"));
 		registerRequestHeader(new LongFactory("Content-Length"));
+		registerRequestHeader(new StringListFactory("Connection", ", "));
 	}
 	
 	public void registerRequestHeader(HeaderObjectFactory<?> factory) {

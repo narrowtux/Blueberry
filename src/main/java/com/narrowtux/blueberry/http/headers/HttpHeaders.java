@@ -59,6 +59,10 @@ public class HttpHeaders {
 	 * @param value the value to set
 	 */
 	public void setHeader(String key, Object value) {
+		if (value == null) {
+			headers.remove(key);
+			return;
+		}
 		LinkedList<Object> list = new LinkedList<Object>();
 		list.add(value);
 		headers.put(key, list);
@@ -100,17 +104,32 @@ public class HttpHeaders {
 				}
 				values += toSend;
 				if (value != e.getValue().getLast()) {
-					values += !multi? "; " : "\n"+key+": ";
+					values += !multi? "; " : "\r\n"+key+": ";
 				}
 			}
-			writer.write(key + ": " + values + "\n");
+			writer.write(key + ": " + values + "\r\n");
 		}
-		writer.write("\n");
+		writer.write("\r\n");
 		writer.flush();
 		seal();
 	}
 
 	public boolean isSealed() {
 		return sealed;
+	}
+	
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		for (Entry<String, LinkedList<Object>> entry:headers.entrySet()) {
+			builder.append(entry.getKey());
+			builder.append(": ");
+			for (Object o:entry.getValue()) {
+				builder.append(o.toString());
+				builder.append("; ");
+			}
+			builder.append('\n');
+		}
+		return builder.toString();
 	}
 }

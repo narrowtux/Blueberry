@@ -35,6 +35,7 @@ public class RequestHandlerThread extends Thread {
 			InputStream in = handle.getInputStream();
 			OutputStream out = handle.getOutputStream();
 	
+			boolean shouldClose = true;
 			try {
 				InetAddress from = handle.getInetAddress();
 	
@@ -71,6 +72,7 @@ public class RequestHandlerThread extends Thread {
 							exchange.setHandler(current);
 							exchange.readArguments();
 							current.handle(exchange);
+							shouldClose = current.shouldClose();
 						} catch (Exception e) {
 							if (e instanceof HttpException) {
 								HttpException he = (HttpException) e;
@@ -102,8 +104,10 @@ public class RequestHandlerThread extends Thread {
 					e.printStackTrace();
 				}
 			} finally {
-				in.close();
-				out.close();
+				if (shouldClose) {
+					in.close();
+					out.close();
+				}
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
