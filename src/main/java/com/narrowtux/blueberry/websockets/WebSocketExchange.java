@@ -65,6 +65,10 @@ public class WebSocketExchange {
 			out.write((int) (len >> 8));
 			out.write((int) len);
 		} else if (firstlen == 127) {
+			out.write((int) (len >> 56));
+			out.write((int) (len >> 48));
+			out.write((int) (len >> 40));
+			out.write((int) (len >> 32));
 			out.write((int) (len >> 24));
 			out.write((int) (len >> 16));
 			out.write((int) (len >> 8));
