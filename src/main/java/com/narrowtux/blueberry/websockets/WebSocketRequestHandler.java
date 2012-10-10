@@ -66,7 +66,6 @@ public abstract class WebSocketRequestHandler extends HttpRequestHandler {
 					e.printStackTrace();
 				}
 				
-				System.out.println("New websocket is open!");
 				while (true) {
 					try {
 						if (!readFrameData(wse, unfinishedFrame)) {
