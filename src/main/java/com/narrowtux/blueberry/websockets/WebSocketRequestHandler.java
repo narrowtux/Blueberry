@@ -69,6 +69,7 @@ public abstract class WebSocketRequestHandler extends HttpRequestHandler {
 				while (true) {
 					try {
 						if (!readFrameData(wse, unfinishedFrame)) {
+							onClose(wse);
 							break;
 						}
 					} catch (SocketException e1) {
@@ -161,6 +162,10 @@ public abstract class WebSocketRequestHandler extends HttpRequestHandler {
 	}
 	
 	public void onFrameReceived(WebSocketExchange exchange, Frame frame) throws IOException {
+		
+	}
+	
+	public void onClose(WebSocketExchange exchange) throws IOException {
 		
 	}
 	
