@@ -173,6 +173,9 @@ public abstract class WebSocketRequestHandler extends HttpRequestHandler {
 	public boolean doesMatch(HttpVersion version, HttpRequestMethod method, URI uri, HttpHeaders requestHeaders) {
 		if (HeaderUtils.headerEquals(requestHeaders, "Upgrade", "websocket") &&
 				HeaderUtils.headerEquals(requestHeaders, "Connection", "Upgrade")) {
+			if (!HeaderUtils.headerEquals(requestHeaders, "Sec-WebSocket-Version", "13")) {
+				return false;
+			}
 			if (method == HttpRequestMethod.GET || method == HttpRequestMethod.POST) {
 				return uri.getPath().startsWith(getFilter());
 			} else {
