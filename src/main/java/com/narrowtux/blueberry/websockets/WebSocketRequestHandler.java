@@ -37,10 +37,10 @@ public abstract class WebSocketRequestHandler extends HttpRequestHandler {
 		exchange.getResponseHeaders().addHeader("Connection", "Upgrade");
 		exchange.getResponseHeaders().setHeader("Content-Type", null);
 		
+		/// Security handshake
 		String sec = HeaderUtils.getHeaderValueAs(exchange.getRequestHeaders(), "Sec-WebSocket-Key", String.class);
 		sec = sec + GLOBALLY_UNIQUE_IDENTIFIER;
-		sec = new String(SHA1.digest(sec.getBytes()));
-		sec = Base64.encodeBase64String(sec.getBytes());
+		sec = Base64.encodeBase64String(SHA1.digest(sec.getBytes()));
 		
 		String origin = HeaderUtils.getHeaderValueAs(exchange.getRequestHeaders(), "Origin", String.class);
 		if (origin != null) {
